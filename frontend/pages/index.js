@@ -1,11 +1,12 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { route } from "next/dist/server/router";
+import { authService } from "../src/services/auth/authService";
 
 export default function HomeScreen() {
   const router = useRouter();
   const [values, setValues] = React.useState({
-    user: "matheus",
+    user: "matheus7c",
     pwd: "123456",
   });
 
@@ -21,9 +22,21 @@ export default function HomeScreen() {
     <div>
       <h1>Login</h1>
       <form
+        //Controller -> onSubmit (pega dados e envia para um serviço)
+        // Serviço -> authService
         onSubmit={(event) => {
           event.preventDefault();
-          router.push("/auth-page-ssr");
+          authService
+            .login({
+              username: values.user,
+              password: values.pwd,
+            })
+            .then(() => {
+              router.push("/auth-page-ssr");
+            })
+            .catch(() => {
+              alert("Usuário ou senha estão inválidos");
+            });
         }}
       >
         <input
